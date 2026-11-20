@@ -1,8 +1,8 @@
-# Ducky
+<h1 align="center">Ducky</h1>
 
-<p align="center">
+<h3 align="center">
   A programming practice manager built with Rust and GTK 4.
-</p>
+</h3>
 
 <p align="center">
   <a href="https://github.com/Nguyentudung/ducky/releases/tag/v0.0.1">
