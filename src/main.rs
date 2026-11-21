@@ -1,4 +1,4 @@
-use gtk4::glib;
+use gtk::glib;
 
 fn main() -> glib::ExitCode {
     ducky::main()
