@@ -6,7 +6,7 @@ pub mod utils;
 pub mod widgets;
 
 mod deps {
-    pub use gtk::{gio, glib};
+    pub use gtk::glib;
 }
 
 use application::DuckyApplication;

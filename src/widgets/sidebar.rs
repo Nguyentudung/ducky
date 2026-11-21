@@ -6,8 +6,8 @@ pub fn build() -> gtk::ListBox {
     sidebar.set_selection_mode(gtk::SelectionMode::Single);
     sidebar.add_css_class("navigation-sidebar");
 
-    // Dashboard
-    add_navigation_item(&sidebar, "Dashboard", "go-home-symbolic", "dashboard");
+    // Home
+    add_navigation_item(&sidebar, "Home", "go-home-symbolic", "home");
 
     // Problems
     add_navigation_item(&sidebar, "Problems", "view-list-symbolic", "problems");
