@@ -1,30 +1,16 @@
-use glib::clone;
-// glib and other dependencies are re-exported by the gtk crate
 use gtk4::glib;
 use gtk4::prelude::*;
 
-// When the application is launched…
-fn on_activate(application: &gtk4::Application) {
-    // … create a new window …
-    let window = gtk4::ApplicationWindow::new(application);
-    // … with a button in it …
-    let button = gtk4::Button::with_label("Hello World!");
-    // … which closes the window when clicked
-    button.connect_clicked(clone!(
-        #[weak]
-        window,
-        move |_| window.close()
-    ));
-    window.set_child(Some(&button));
-    window.present();
-}
+mod app;
 
 fn main() {
-    // Create a new application with the builder pattern
+    glib::set_application_name("Ducky");
+
     let app = gtk4::Application::builder()
-        .application_id("com.github.gtk-rs.examples.basic")
+        .application_id("io.github.nguyentudung.ducky")
         .build();
-    app.connect_activate(on_activate);
-    // Run the application
+
+    app.connect_activate(app::on_activate);
+
     app.run();
 }
