@@ -17,7 +17,7 @@ impl DuckyApplication {
         app.connect_activate(|app| {
             crate::ui::styles::load();
 
-            // Main window
+            // Main Window
             let window = adw::ApplicationWindow::builder()
                 .application(app)
                 .title("Ducky")
@@ -25,17 +25,26 @@ impl DuckyApplication {
                 .default_height(700)
                 .build();
 
-            // Header Bar
-            let header_bar = adw::HeaderBar::new();
+            // Sidebar Header Bar
+            let sidebar_header = adw::HeaderBar::new();
 
-            let title = gtk::Label::new(Some("Ducky"));
+            sidebar_header.add_css_class("sidebar-header");
 
-            header_bar.set_title_widget(Some(&title));
+            let sidebar_title = gtk::Label::new(Some("Ducky"));
+
+            sidebar_header.set_title_widget(Some(&sidebar_title));
 
             // Sidebar
             let sidebar = sidebar::build();
 
-            let sidebar_page = adw::NavigationPage::new(&sidebar, "Navigation");
+            // Sidebar Toolbar View
+            let sidebar_toolbar = adw::ToolbarView::new();
+
+            sidebar_toolbar.add_top_bar(&sidebar_header);
+            sidebar_toolbar.set_content(Some(&sidebar));
+
+            // Sidebar Navigation Page
+            let sidebar_page = adw::NavigationPage::new(&sidebar_toolbar, "Navigation");
 
             // Content Stack
             let content_stack = gtk::Stack::new();
@@ -57,14 +66,14 @@ impl DuckyApplication {
 
             dashboard_title.add_css_class("title-1");
 
-            // Create Problem button
+            // Create Problem Button
             let create_button = gtk::Button::with_label("Create Problem");
 
             create_button.add_css_class("suggested-action");
             create_button.add_css_class("rounded-button");
             create_button.set_size_request(160, 50);
 
-            // Delete Problem button
+            // Delete Problem Button
             let delete_button = gtk::Button::with_label("Delete Problem");
 
             delete_button.add_css_class("destructive-action");
@@ -75,7 +84,7 @@ impl DuckyApplication {
             dashboard.append(&create_button);
             dashboard.append(&delete_button);
 
-            // Problems page
+            // Problems Page
             let problems = gtk::Box::new(gtk::Orientation::Vertical, 12);
 
             problems.set_margin_top(24);
@@ -90,7 +99,7 @@ impl DuckyApplication {
 
             problems.append(&problems_title);
 
-            // Recent page
+            // Recent Page
             let recent = gtk::Box::new(gtk::Orientation::Vertical, 12);
 
             recent.set_margin_top(24);
@@ -105,7 +114,7 @@ impl DuckyApplication {
 
             recent.append(&recent_title);
 
-            // Settings page
+            // Settings Page
             let settings = gtk::Box::new(gtk::Orientation::Vertical, 12);
 
             settings.set_margin_top(24);
@@ -120,7 +129,7 @@ impl DuckyApplication {
 
             settings.append(&settings_title);
 
-            // Add pages to Stack
+            // Add Pages to Stack
             content_stack.add_named(&dashboard, Some("dashboard"));
 
             content_stack.add_named(&problems, Some("problems"));
@@ -129,10 +138,10 @@ impl DuckyApplication {
 
             content_stack.add_named(&settings, Some("settings"));
 
-            // Clone Stack for navigation callback
+            // Clone Stack for Navigation Callback
             let navigation_stack = content_stack.clone();
 
-            // Navigation selection
+            // Navigation Selection
             sidebar.connect_row_selected(move |_, row| {
                 if let Some(row) = row {
                     match row.index() {
@@ -157,11 +166,27 @@ impl DuckyApplication {
                 }
             });
 
-            // Select Dashboard initially
+            // Select Dashboard Initially
             sidebar.select_row(sidebar.row_at_index(0).as_ref());
 
+            // Content Header Bar
+            let content_header = adw::HeaderBar::new();
+
+            content_header.add_css_class("content-header");
+
+            let content_title = gtk::Label::new(Some("Ducky"));
+
+            content_header.set_title_widget(Some(&content_title));
+
+            // Content Toolbar View
+            let content_toolbar = adw::ToolbarView::new();
+
+            content_toolbar.add_top_bar(&content_header);
+
+            content_toolbar.set_content(Some(&content_stack));
+
             // Content Navigation Page
-            let content_page = adw::NavigationPage::new(&content_stack, "Ducky");
+            let content_page = adw::NavigationPage::new(&content_toolbar, "Content");
 
             // Navigation Split View
             let split_view = adw::NavigationSplitView::new();
@@ -174,14 +199,8 @@ impl DuckyApplication {
             split_view.set_min_sidebar_width(180.0);
             split_view.set_max_sidebar_width(280.0);
 
-            // Toolbar View
-            let toolbar_view = adw::ToolbarView::new();
-
-            toolbar_view.add_top_bar(&header_bar);
-
-            toolbar_view.set_content(Some(&split_view));
-
-            window.set_content(Some(&toolbar_view));
+            // Set Split View as Window Content
+            window.set_content(Some(&split_view));
 
             window.present();
         });
