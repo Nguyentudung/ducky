@@ -8,8 +8,8 @@ pub fn build(app: &adw::Application) {
     let window = adw::ApplicationWindow::builder()
         .application(app)
         .title("Ducky")
-        .default_width(1000)
-        .default_height(700)
+        .default_width(800)
+        .default_height(500)
         .build();
 
     // Sidebar Header Bar
@@ -25,20 +25,25 @@ pub fn build(app: &adw::Application) {
 
     content_header.set_title_widget(Some(&content_title));
 
+    // Pages Stack
+    let content_stack = pages::build();
+
     // Sidebar
-    let sidebar = sidebar::build();
+    let settings_stack = content_stack.clone();
+    let settings_title = content_title.clone();
+
+    let (sidebar_widget, sidebar) = sidebar::build(move || {
+        settings_stack.set_visible_child_name("settings");
+        settings_title.set_text("Settings");
+    });
 
     // Sidebar Toolbar View
     let sidebar_toolbar = adw::ToolbarView::new();
     sidebar_toolbar.add_top_bar(&sidebar_header);
-    sidebar_toolbar.set_content(Some(&sidebar));
+    sidebar_toolbar.set_content(Some(&sidebar_widget));
 
     // Sidebar Navigation Page
     let sidebar_page = adw::NavigationPage::new(&sidebar_toolbar, "Ducky");
-
-    // Pages Stack
-    let content_stack = pages::build();
-
     // Navigation
     let navigation_stack = content_stack.clone();
     let navigation_title = content_title.clone();
@@ -59,11 +64,6 @@ pub fn build(app: &adw::Application) {
                 2 => {
                     navigation_stack.set_visible_child_name("recent");
                     navigation_title.set_text("Recent");
-                }
-
-                3 => {
-                    navigation_stack.set_visible_child_name("settings");
-                    navigation_title.set_text("Settings");
                 }
 
                 _ => {}
