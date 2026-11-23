@@ -1,3 +1,6 @@
+# Language
+language = English
+
 # Application
 app-name = Ducky
 

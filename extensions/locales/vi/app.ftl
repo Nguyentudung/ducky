@@ -1,3 +1,6 @@
+# Language
+language = Vietnam
+
 # Application
 app-name = Ducky
 

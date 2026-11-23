@@ -1,9 +1,9 @@
 use fluent_bundle::{FluentBundle, FluentResource};
 use unic_langid::LanguageIdentifier;
 
-const EN_TRANSLATIONS: &str = include_str!("../../../resources/locales/en/app.ftl");
+const EN_TRANSLATIONS: &str = include_str!("../../../extensions/locales/en/app.ftl");
 
-const VI_TRANSLATIONS: &str = include_str!("../../../resources/locales/vi/app.ftl");
+const VI_TRANSLATIONS: &str = include_str!("../../../extensions/locales/vi/app.ftl");
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AppLanguage {
