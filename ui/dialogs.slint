@@ -1,0 +1,85 @@
+import { Theme } from "theme/tokens.slint";
+import { ProblemItem, UiStrings } from "types.slint";
+import { Button, Choice, Field, Icon, Tag } from "components/primitives.slint";
+import { ScrollView } from "std-widgets.slint";
+
+component FormLabel inherits Text { color: Theme.text-secondary; font-size: 11px; font-weight: 650; height: 15px; }
+component FormGroup inherits VerticalLayout { in property <string> title; spacing: 7px; Text { text: root.title; color: Theme.text-muted; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; } @children }
+component DetailBlock inherits VerticalLayout { in property <string> heading; in property <string> value; spacing: 5px; Text { text: root.heading; color: Theme.text-muted; font-size: 10px; font-weight: 700; letter-spacing: 0.7px; } Text { text: root.value; color: Theme.text-secondary; font-size: 13px; wrap: word-wrap; } }
+component DetailMeta inherits VerticalLayout { in property <string> label; in property <string> value; spacing: 3px; Text { text: root.label; color: Theme.text-muted; font-size: 10px; font-weight: 650; } Text { text: root.value; color: Theme.text-secondary; font-size: 11px; overflow: elide; } }
+
+export component ProblemForm inherits Rectangle {
+    in property <UiStrings> strings; in property <bool> editing;
+    in-out property <string> form_title; in-out property <string> form_identifier; in-out property <string> form_platform; in-out property <string> form_url; in-out property <string> form_tags; in-out property <string> form_description; in-out property <string> form_notes; in-out property <string> form_workspace;
+    in-out property <string> form_difficulty; in-out property <string> form_status; in-out property <string> form_template;
+    in-out property <bool> lang_c; in-out property <bool> lang_cpp; in-out property <bool> lang_rust; in-out property <bool> lang_python; in-out property <bool> lang_java;
+    callback close; callback submit; callback browse_workspace;
+    background: Theme.overlay;
+
+    Rectangle { x: parent.width > 760px ? (parent.width - 684px) / 2 : 22px; y: parent.height > 730px ? (parent.height - 690px) / 2 : 16px; width: parent.width > 760px ? 684px : parent.width - 44px; height: parent.height > 730px ? 690px : parent.height - 32px; border-radius: Theme.radius-lg; background: Theme.surface-raised; border-width: 1px; border-color: Theme.border;
+        VerticalLayout { padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; spacing: 0px;
+            HorizontalLayout { height: 67px; padding-left: 26px; padding-right: 18px; spacing: 12px;
+                VerticalLayout { vertical-stretch: 1; spacing: 2px; Text { text: root.editing ? root.strings.edit_problem : root.strings.new_problem; color: Theme.text; font-size: 20px; font-weight: 720; } Text { text: root.strings.workspace; color: Theme.text-muted; font-size: 11px; } }
+                Button { text: ""; icon: "close"; kind: "ghost"; width: 36px; clicked => root.close(); }
+            }
+            Rectangle { height: 1px; background: Theme.separator; }
+            ScrollView { vertical-stretch: 1;
+                VerticalLayout { padding-top: 18px; padding-bottom: 18px; padding-left: 26px; padding-right: 26px; spacing: 18px;
+                    FormGroup { title: root.strings.title;
+                        FormLabel { text: root.strings.title; } Field { text: root.form_title; placeholder: root.strings.title; }
+                        HorizontalLayout { height: 60px; spacing: 12px;
+                            VerticalLayout { spacing: 5px; FormLabel { text: root.strings.identifier; } Field { text: root.form_identifier; placeholder: root.strings.identifier; } }
+                            VerticalLayout { spacing: 5px; FormLabel { text: root.strings.platform; } Field { text: root.form_platform; placeholder: root.strings.platform; } }
+                        }
+                    }
+                    FormGroup { title: root.strings.description;
+                        FormLabel { text: root.strings.url; } Field { text: root.form_url; placeholder: "https://"; }
+                        FormLabel { text: root.strings.description; } Field { text: root.form_description; placeholder: root.strings.description; multiline: true; }
+                    }
+                    FormGroup { title: root.strings.workspace;
+                        HorizontalLayout { height: 60px; spacing: 12px;
+                            VerticalLayout { spacing: 5px; FormLabel { text: root.strings.tags; } Field { text: root.form_tags; placeholder: "array, dp"; } }
+                            VerticalLayout { spacing: 5px; FormLabel { text: root.strings.workspace; } Field { text: root.form_workspace; placeholder: root.strings.workspace; } }
+                        }
+                    }
+                    FormGroup { title: root.strings.status;
+                        FormLabel { text: root.strings.difficulty; }
+                        HorizontalLayout { height: 30px; spacing: 4px; Choice { text: root.strings.difficulty_easy; selected: root.form_difficulty == "easy"; width: 74px; clicked => { root.form_difficulty = "easy"; } } Choice { text: root.strings.difficulty_medium; selected: root.form_difficulty == "medium"; width: 84px; clicked => { root.form_difficulty = "medium"; } } Choice { text: root.strings.difficulty_hard; selected: root.form_difficulty == "hard"; width: 74px; clicked => { root.form_difficulty = "hard"; } } Choice { text: root.strings.difficulty_custom; selected: root.form_difficulty == "custom"; width: 78px; clicked => { root.form_difficulty = "custom"; } } }
+                        FormLabel { text: root.strings.status; }
+                        HorizontalLayout { height: 30px; spacing: 4px; Choice { text: root.strings.status_not_started; selected: root.form_status == "not_started"; width: 95px; clicked => { root.form_status = "not_started"; } } Choice { text: root.strings.status_in_progress; selected: root.form_status == "in_progress"; width: 93px; clicked => { root.form_status = "in_progress"; } } Choice { text: root.strings.status_solved; selected: root.form_status == "solved"; width: 66px; clicked => { root.form_status = "solved"; } } Choice { text: root.strings.status_review; selected: root.form_status == "review"; width: 66px; clicked => { root.form_status = "review"; } } }
+                    }
+                    FormGroup { title: root.strings.languages;
+                        HorizontalLayout { height: 30px; spacing: 4px; Choice { text: "C"; selected: root.lang_c; width: 42px; clicked => { root.lang_c = !root.lang_c; } } Choice { text: "C++"; selected: root.lang_cpp; width: 52px; clicked => { root.lang_cpp = !root.lang_cpp; } } Choice { text: "Rust"; selected: root.lang_rust; width: 58px; clicked => { root.lang_rust = !root.lang_rust; } } Choice { text: "Python"; selected: root.lang_python; width: 67px; clicked => { root.lang_python = !root.lang_python; } } Choice { text: "Java"; selected: root.lang_java; width: 58px; clicked => { root.lang_java = !root.lang_java; } } Rectangle { horizontal-stretch: 1; } Choice { text: root.strings.starter; selected: root.form_template == "starter"; width: 92px; clicked => { root.form_template = "starter"; } } Choice { text: root.strings.empty; selected: root.form_template == "empty"; width: 72px; clicked => { root.form_template = "empty"; } } }
+                        FormLabel { text: root.strings.notes; } Field { text: root.form_notes; placeholder: root.strings.notes; multiline: true; }
+                    }
+                }
+            }
+            Rectangle { height: 1px; background: Theme.separator; }
+            HorizontalLayout { height: 68px; padding-left: 26px; padding-right: 26px; spacing: 8px; Rectangle { horizontal-stretch: 1; } Button { text: root.strings.cancel; kind: "ghost"; width: 88px; clicked => root.close(); } Button { text: root.editing ? root.strings.save : root.strings.create; kind: "primary"; width: 104px; clicked => root.submit(); } }
+        }
+    }
+}
+
+export component ProblemDetail inherits Rectangle {
+    in property <UiStrings> strings; in property <ProblemItem> problem; in property <string> source_files;
+    callback close; callback edit; callback delete; callback open_workspace; callback open_url; callback status_changed(string);
+    background: Theme.overlay;
+    Rectangle { x: parent.width > 720px ? (parent.width - 620px) / 2 : 22px; y: parent.height > 680px ? (parent.height - 610px) / 2 : 22px; width: parent.width > 720px ? 620px : parent.width - 44px; height: parent.height > 680px ? 610px : parent.height - 44px; border-radius: Theme.radius-lg; background: Theme.surface-raised; border-width: 1px; border-color: Theme.border;
+        VerticalLayout { spacing: 0px;
+            HorizontalLayout { height: 76px; padding-left: 26px; padding-right: 18px; spacing: 12px; VerticalLayout { vertical-stretch: 1; spacing: 3px; Text { text: root.problem.title; color: Theme.text; font-size: 20px; font-weight: 720; overflow: elide; } Text { text: root.problem.identifier; color: Theme.text-muted; font-size: 11px; } } Button { text: ""; icon: "close"; kind: "ghost"; width: 36px; clicked => root.close(); } }
+            Rectangle { height: 1px; background: Theme.separator; }
+            VerticalLayout { padding-top: 14px; padding-left: 26px; padding-right: 26px; spacing: 9px; HorizontalLayout { height: 30px; spacing: 4px; Choice { text: root.strings.status_not_started; selected: root.problem.status == "not_started"; width: 95px; clicked => root.status_changed("not_started"); } Choice { text: root.strings.status_in_progress; selected: root.problem.status == "in_progress"; width: 93px; clicked => root.status_changed("in_progress"); } Choice { text: root.strings.status_solved; selected: root.problem.status == "solved"; width: 66px; clicked => root.status_changed("solved"); } Choice { text: root.strings.status_review; selected: root.problem.status == "review"; width: 66px; clicked => root.status_changed("review"); } } }
+            ScrollView { vertical-stretch: 1; VerticalLayout { padding-top: 8px; padding-bottom: 16px; padding-left: 26px; padding-right: 26px; spacing: 17px; DetailBlock { heading: root.strings.description; value: root.problem.description != "" ? root.problem.description : "—"; } DetailBlock { heading: root.strings.notes; value: root.problem.notes != "" ? root.problem.notes : "—"; } DetailBlock { heading: root.strings.platform; value: root.problem.platform != "" ? root.problem.platform : "—"; } DetailBlock { heading: root.strings.languages; value: root.problem.languages; } DetailBlock { heading: root.strings.source_files; value: root.source_files != "" ? root.source_files : "—"; } DetailBlock { heading: root.strings.workspace; value: root.problem.workspace_path; } HorizontalLayout { height: 38px; spacing: 24px; DetailMeta { label: root.strings.created; value: root.problem.created_at; } DetailMeta { label: root.strings.modified; value: root.problem.updated_at; } } } }
+            Rectangle { height: 1px; background: Theme.separator; }
+            HorizontalLayout { height: 68px; padding-left: 26px; padding-right: 26px; spacing: 8px; Button { text: root.strings.delete; kind: "ghost"; width: 80px; clicked => root.delete(); } Rectangle { horizontal-stretch: 1; } Button { text: root.strings.open_workspace; icon: "folder"; width: 138px; clicked => root.open_workspace(); } Button { visible: root.problem.url != ""; text: root.strings.open_url; kind: "ghost"; width: 94px; clicked => root.open_url(); } Button { text: root.strings.edit; kind: "primary"; width: 78px; clicked => root.edit(); } }
+        }
+    }
+}
+
+export component ConfirmDialog inherits Rectangle {
+    in property <UiStrings> strings; in property <string> title; in property <string> body; callback cancel; callback confirm;
+    background: Theme.overlay;
+    Rectangle { x: (parent.width - 408px) / 2; y: (parent.height - 226px) / 2; width: 408px; height: 226px; border-radius: Theme.radius-lg; background: Theme.surface-raised; border-width: 1px; border-color: Theme.border;
+        VerticalLayout { padding-top: 24px; padding-bottom: 18px; padding-left: 24px; padding-right: 24px; spacing: 12px; Text { text: root.title; color: Theme.text; font-size: 18px; font-weight: 700; } Text { text: root.body; color: Theme.text-secondary; font-size: 13px; wrap: word-wrap; vertical-stretch: 1; } HorizontalLayout { spacing: 8px; Rectangle { horizontal-stretch: 1; } Button { text: root.strings.cancel; kind: "ghost"; width: 84px; clicked => root.cancel(); } Button { text: root.strings.delete; kind: "danger"; width: 88px; clicked => root.confirm(); } } }
+    }
+}

@@ -1,0 +1,16 @@
+import { Theme } from "../theme/tokens.slint";
+import { ProblemItem, UiStrings } from "../types.slint";
+import { Button, Icon, SectionTitle } from "../components/primitives.slint";
+import { ProblemRow } from "../components/problem-row.slint";
+import { ScrollView } from "std-widgets.slint";
+
+export component RecentPage inherits Rectangle {
+    in property <UiStrings> strings; in property <[ProblemItem]> items;
+    callback clear; callback browse; callback open_problem(int);
+    background: Theme.background;
+    ScrollView { VerticalLayout { x: 36px; y: 30px; width: parent.width - 72px; spacing: 20px;
+        HorizontalLayout { height: 55px; SectionTitle { eyebrow: root.items.length + ""; title: root.strings.recent_title; vertical-stretch: 1; } Button { visible: root.items.length > 0; text: root.strings.clear_history; icon: "close"; width: 135px; clicked => root.clear(); } }
+        if root.items.length == 0 : Rectangle { height: 310px; border-radius: Theme.radius-lg; background: Theme.surface; border-width: 0px; VerticalLayout { alignment: center; spacing: 12px; Rectangle { width: 52px; height: 52px; border-radius: Theme.radius-lg; background: Theme.accent-soft; Icon { name: "recent"; ink: Theme.accent; width: 27px; height: 27px; x: 13px; y: 13px; } } Text { text: root.strings.recent_empty_title; color: Theme.text; font-size: 19px; font-weight: 700; horizontal-alignment: center; } Text { text: root.strings.recent_empty_description; color: Theme.text-secondary; font-size: 13px; horizontal-alignment: center; } Button { text: root.strings.nav_problems; kind: "primary"; clicked => root.browse(); } } }
+        if root.items.length > 0 : VerticalLayout { spacing: 7px; for item in root.items : ProblemRow { problem: item; show_activity: true; clicked(id) => root.open_problem(id); } }
+    } }
+}

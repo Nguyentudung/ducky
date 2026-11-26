@@ -1,17 +1,12 @@
-pub mod application;
-pub mod config;
+//! Native Slint application entry point. Domain services intentionally do not depend on Slint.
+
+pub mod app;
 pub mod core;
-pub mod ui;
-pub mod utils;
-pub mod widgets;
+pub mod platform;
+pub mod state;
 
-mod deps {
-    pub use gtk::glib;
-}
+slint::include_modules!();
 
-use application::DuckyApplication;
-use deps::*;
-
-pub fn main() -> glib::ExitCode {
-    DuckyApplication::new().run()
+pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    app::run()
 }

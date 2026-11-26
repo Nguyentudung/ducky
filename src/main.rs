@@ -1,5 +1,5 @@
-use gtk::glib;
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-fn main() -> glib::ExitCode {
-    ducky::main()
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ducky::run()
 }

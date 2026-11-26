@@ -114,3 +114,17 @@ impl LanguageManager {
             .to_string()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{AppLanguage, LanguageManager};
+
+    #[test]
+    fn switches_between_english_and_vietnamese() {
+        let mut language = LanguageManager::new(AppLanguage::English);
+        assert_eq!(language.translate("navigation-home"), "Home");
+        language.set_language(AppLanguage::Vietnamese);
+        assert_eq!(language.translate("navigation-home"), "Trang chủ");
+        assert_eq!(language.translate("status-solved"), "Đã giải");
+    }
+}

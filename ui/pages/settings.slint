@@ -1,0 +1,25 @@
+import { Theme } from "../theme/tokens.slint";
+import { UiStrings } from "../types.slint";
+import { Button, Choice, SectionTitle } from "../components/primitives.slint";
+import { ScrollView } from "std-widgets.slint";
+
+component SettingGroup inherits Rectangle { in property <string> title; border-radius: Theme.radius-md; background: Theme.surface; border-width: 0px; VerticalLayout { padding-top: 15px; padding-bottom: 15px; padding-left: 18px; padding-right: 18px; spacing: 9px; Text { text: root.title; color: Theme.text-muted; font-size: 10px; font-weight: 700; letter-spacing: 0.7px; } HorizontalLayout { vertical-stretch: 1; spacing: 18px; @children } } }
+component RowText inherits VerticalLayout { in property <string> title; in property <string> detail; spacing: 4px; Text { text: root.title; color: Theme.text; font-size: 13px; font-weight: 620; } Text { visible: root.detail != ""; text: root.detail; color: Theme.text-secondary; font-size: 11px; overflow: elide; } }
+
+export component SettingsPage inherits Rectangle {
+    in property <UiStrings> strings;
+    in property <string> theme_value; in property <string> language_value; in property <string> workspace_value; in property <string> default_language_value; in property <string> default_difficulty_value;
+    callback theme_changed(string); callback language_changed(string); callback browse_workspace; callback open_workspace; callback default_language_changed(string); callback default_difficulty_changed(string);
+    background: Theme.background;
+    ScrollView { VerticalLayout { x: 36px; y: 30px; width: parent.width - 72px; spacing: 18px;
+        SectionTitle { eyebrow: "DUCKY"; title: root.strings.settings_title; height: 55px; }
+        SettingGroup { title: root.strings.appearance; height: 100px; RowText { title: root.strings.theme; detail: ""; vertical-stretch: 1; } HorizontalLayout { width: 270px; spacing: 6px; Choice { text: root.strings.system; selected: root.theme_value == "system"; width: 80px; clicked => root.theme_changed("system"); } Choice { text: root.strings.light; selected: root.theme_value == "light"; width: 75px; clicked => root.theme_changed("light"); } Choice { text: root.strings.dark; selected: root.theme_value == "dark"; width: 75px; clicked => root.theme_changed("dark"); } } }
+        SettingGroup { title: root.strings.language; height: 100px; RowText { title: root.strings.language; detail: ""; vertical-stretch: 1; } HorizontalLayout { width: 270px; spacing: 6px; Choice { text: root.strings.system; selected: root.language_value == "system"; width: 80px; clicked => root.language_changed("system"); } Choice { text: "English"; selected: root.language_value == "en"; width: 85px; clicked => root.language_changed("en"); } Choice { text: "Tiếng Việt"; selected: root.language_value == "vi"; width: 90px; clicked => root.language_changed("vi"); } } }
+        SettingGroup { title: root.strings.workspace; height: 119px; RowText { title: root.strings.workspace_path; detail: root.workspace_value; vertical-stretch: 1; } HorizontalLayout { width: 186px; spacing: 7px; Button { text: root.strings.browse; width: 94px; clicked => root.browse_workspace(); } Button { text: root.strings.open; icon: "folder"; width: 84px; clicked => root.open_workspace(); } } }
+        SettingGroup { title: root.strings.defaults; height: 144px; VerticalLayout { vertical-stretch: 1; spacing: 9px;
+            HorizontalLayout { height: 48px; RowText { title: root.strings.default_language; detail: ""; vertical-stretch: 1; } HorizontalLayout { width: 263px; spacing: 6px; Choice { text: "Rust"; selected: root.default_language_value == "rust"; width: 55px; clicked => root.default_language_changed("rust"); } Choice { text: "Python"; selected: root.default_language_value == "python"; width: 65px; clicked => root.default_language_changed("python"); } Choice { text: "C++"; selected: root.default_language_value == "cpp"; width: 50px; clicked => root.default_language_changed("cpp"); } Choice { text: "Java"; selected: root.default_language_value == "java"; width: 55px; clicked => root.default_language_changed("java"); } } }
+            HorizontalLayout { height: 48px; RowText { title: root.strings.default_difficulty; detail: ""; vertical-stretch: 1; } HorizontalLayout { width: 263px; spacing: 6px; Choice { text: root.strings.difficulty_easy; selected: root.default_difficulty_value == "easy"; width: 56px; clicked => root.default_difficulty_changed("easy"); } Choice { text: root.strings.difficulty_medium; selected: root.default_difficulty_value == "medium"; width: 69px; clicked => root.default_difficulty_changed("medium"); } Choice { text: root.strings.difficulty_hard; selected: root.default_difficulty_value == "hard"; width: 56px; clicked => root.default_difficulty_changed("hard"); } } }
+        } }
+    } }
+}
+

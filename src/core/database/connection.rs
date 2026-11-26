@@ -1,16 +1,15 @@
 use directories::ProjectDirs;
-use rusqlite::{Connection, Result};
+use rusqlite::Connection;
 use std::fs;
 
-pub fn open_database() -> Result<Connection> {
-    let project_dirs = ProjectDirs::from("com", "Ducky", "Ducky")
-        .expect("Unable to determine application data directory");
+use crate::core::error::{AppError, AppResult};
 
-    let data_dir = project_dirs.data_dir();
-
-    fs::create_dir_all(data_dir).expect("Unable to create application data directory");
-
-    let db_path = data_dir.join("ducky.db");
-
-    Connection::open(db_path)
+/// Uses the same stable app-data location and `ducky.db` filename as the prior Tauri app.
+pub fn open_database() -> AppResult<Connection> {
+    let dirs = ProjectDirs::from("com", "Ducky", "Ducky").ok_or_else(|| {
+        AppError::Validation("Unable to determine the application data directory".into())
+    })?;
+    fs::create_dir_all(dirs.data_dir())
+        .map_err(|e| AppError::filesystem("Unable to create the application data directory", e))?;
+    Ok(Connection::open(dirs.data_dir().join("ducky.db"))?)
 }

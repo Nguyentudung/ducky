@@ -1,0 +1,59 @@
+import { Theme } from "../theme/tokens.slint";
+import { ProblemItem, UiStrings } from "../types.slint";
+import { Button, Icon, SectionTitle } from "../components/primitives.slint";
+import { ProblemRow } from "../components/problem-row.slint";
+import { ScrollView } from "std-widgets.slint";
+
+component StatCard inherits Rectangle { in property <string> label; in property <int> value; in property <color> ink; in property <color> fill; border-radius: Theme.radius-md; background: fill; border-width: 0px; VerticalLayout { padding: 16px; spacing: 5px; Text { text: root.label; color: Theme.text-secondary; font-size: 12px; } Text { text: root.value; color: root.ink; font-size: 25px; font-weight: 720; } } }
+component QuickAction inherits Rectangle { in property <string> label; in property <string> icon; callback clicked; border-radius: Theme.radius-md; background: area.has-hover ? Theme.surface-hover : Theme.surface; border-width: 0px; HorizontalLayout { padding-left: 15px; spacing: 10px; Icon { name: root.icon; ink: area.has-hover ? Theme.accent : Theme.text-secondary; width: 19px; height: 19px; } Text { text: root.label; color: Theme.text; font-size: 13px; font-weight: 620; vertical-alignment: center; } } area := TouchArea { clicked => root.clicked(); } }
+component Activity inherits VerticalLayout { in property <string> title; in property <[ProblemItem]> items; in property <bool> active; callback open_problem(int); spacing: 9px; Text { text: root.title; color: Theme.text; font-size: 15px; font-weight: 700; } for item in root.items : ProblemRow { problem: item; show_activity: root.active; clicked(id) => root.open_problem(id); } }
+
+export component HomePage inherits Rectangle {
+    in property <UiStrings> strings;
+    in property <int> total; in property <int> solved; in property <int> in_progress; in property <int> not_started;
+    in property <[ProblemItem]> recent; in property <[ProblemItem]> modified;
+    callback new_problem; callback browse_problems; callback open_workspace; callback show_recent; callback open_problem(int);
+    background: Theme.background;
+    ScrollView {
+        VerticalLayout { x: 36px; y: 30px; width: parent.width - 72px; spacing: 24px;
+            HorizontalLayout { height: 55px;
+                SectionTitle { eyebrow: root.strings.home_overview; title: root.strings.home_title; vertical-stretch: 1; }
+                Button { text: root.strings.new_problem; icon: "plus"; kind: "primary"; width: 136px; clicked => root.new_problem(); }
+            }
+            if root.total == 0 : Rectangle { height: 308px; border-radius: Theme.radius-lg; background: Theme.surface; border-width: 0px;
+                VerticalLayout { alignment: center; padding-left: 30px; padding-right: 30px; spacing: 12px;
+                    Rectangle { width: 54px; height: 54px; border-radius: Theme.radius-lg; background: Theme.accent-soft; Icon { name: "spark"; ink: Theme.accent; width: 27px; height: 27px; x: 13px; y: 13px; } }
+                    Text { text: root.strings.home_empty_title; color: Theme.text; font-size: 20px; font-weight: 700; horizontal-alignment: center; }
+                    Text { text: root.strings.home_empty_description; color: Theme.text-muted; font-size: 13px; horizontal-alignment: center; wrap: word-wrap; max-width: 420px; }
+                    Button { text: root.strings.new_problem; icon: "plus"; kind: "primary"; clicked => root.new_problem(); }
+                }
+            }
+            if root.total > 0 : VerticalLayout { spacing: 22px;
+                HorizontalLayout { height: 90px; spacing: 10px;
+                    StatCard { label: root.strings.home_total; value: root.total; ink: Theme.text; fill: Theme.surface; }
+                    StatCard { label: root.strings.home_solved; value: root.solved; ink: Theme.success; fill: Theme.success-soft; }
+                    StatCard { label: root.strings.home_progress; value: root.in_progress; ink: Theme.accent; fill: Theme.accent-soft; }
+                    StatCard { label: root.strings.home_not_started; value: root.not_started; ink: Theme.text-secondary; fill: Theme.surface; }
+                }
+                Rectangle { height: 110px; border-radius: Theme.radius-md; background: Theme.surface; border-width: 0px;
+                    VerticalLayout { padding: 17px; spacing: 10px;
+                        HorizontalLayout { Text { text: root.strings.home_completion; color: Theme.text; font-size: 13px; font-weight: 650; vertical-stretch: 1; } Text { text: root.total > 0 ? ((root.solved * 100) / root.total) + "%" : "0%"; color: Theme.accent; font-size: 14px; font-weight: 700; } }
+                        Rectangle { height: 7px; border-radius: 4px; background: Theme.field; Rectangle { width: root.total > 0 ? parent.width * root.solved / root.total : 0px; height: parent.height; border-radius: 4px; background: Theme.accent; } }
+                        Text { text: root.solved + " / " + root.total + " " + root.strings.home_solved; color: Theme.text-muted; font-size: 11px; }
+                    }
+                }
+                VerticalLayout { spacing: 10px; Text { text: root.strings.home_quick_actions; color: Theme.text; font-size: 15px; font-weight: 700; }
+                    HorizontalLayout { height: 72px; spacing: 10px;
+                        QuickAction { label: root.strings.new_problem; icon: "plus"; clicked => root.new_problem(); }
+                        QuickAction { label: root.strings.nav_problems; icon: "problems"; clicked => root.browse_problems(); }
+                        QuickAction { label: root.strings.workspace; icon: "folder"; clicked => root.open_workspace(); }
+                        QuickAction { label: root.strings.nav_recent; icon: "recent"; clicked => root.show_recent(); }
+                    }
+                }
+                if root.recent.length > 0 : Activity { title: root.strings.home_recent; items: root.recent; active: true; open_problem(id) => { root.open_problem(id); } }
+                if root.modified.length > 0 : Activity { title: root.strings.home_modified; items: root.modified; active: false; open_problem(id) => { root.open_problem(id); } }
+            }
+        }
+    }
+}
+

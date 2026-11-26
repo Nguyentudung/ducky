@@ -1,54 +1,39 @@
-<h1 align="center">Ducky</h1>
+# Ducky
 
-<h4 align="center">
-  A programming practice manager built with Rust and GTK 4.
-</h4>
+Ducky is a lightweight, native desktop companion for programming practice. It keeps problem metadata in SQLite and gives every problem a safe, portable workspace with starter files.
 
-<p align="center">
-  <a href="https://github.com/Nguyentudung/ducky/releases/tag/v0.0.1">
-    <img src="https://img.shields.io/badge/release-v0.0.1-blackgreen?style=flat" />
-  </a>
-  <a href="https://en.wikipedia.org/wiki/Linux">
-    <img src="https://img.shields.io/badge/platform-Linux-blue?style=flat" />
-  </a>
-  <a href="https://rust-lang.org/">
-    <img src="https://img.shields.io/badge/built_with-Rust-orange?style=flat" />
-  </a>
-  <a href="https://www.gtk.org/">
-    <img src="https://img.shields.io/badge/GUI-GTK_4-blue?style=flat" />
-  </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-red?style=flat" />
-  </a>
-  <img src="https://img.shields.io/badge/status-Beta-green?style=flat" />
-</p>
+## Stack
 
----
-
-## Overview
-
-Ducky is a programming practice manager designed to help organize programming exercises, workspaces, source files and learning progress.
-
-It automates repetitive setup tasks so you can focus on learning, solving problems and practicing programming.
-
-## Technology Stack
-
-| Technology | Purpose |
+| Technology | Role |
 |---|---|
-| Rust | Main programming language |
-| GTK 4 | Native desktop GUI toolkit |
-| gtk4-rs | Rust bindings for GTK 4 |
-| GLib | Core utilities and application infrastructure |
-| GIO | Application infrastructure and I/O |
-| Cargo | Dependency management and build system |
+| Rust | Application, domain services, persistence and platform integration |
+| Slint 1.19 | Native declarative desktop UI |
+| SQLite / rusqlite | Durable local settings, problems and recent history |
+| Fluent | English and Vietnamese localization |
 
-## Documentation
+## Features
 
-- [Linux Development & Build Guide](docs/linux.md) — Development environment setup, building, running and troubleshooting.
-- [References](docs/references.md) — Official documentation and third-party resources.
+- Home dashboard backed by real problem and recent-history data
+- Problem CRUD, filtering, search, sort, status tracking and details
+- Safe per-problem workspace creation and C/C++/Rust/Python/Java starter templates
+- Persistent workspace, language, theme and default problem preferences
+- Light, dark and system appearance options
+- Native folder selection and operating-system URL/folder opening
 
----
+## Development
 
-<p align="center">
-  Made with Rust 🦀
-</p>
+```bash
+cargo check
+cargo test
+cargo run
+```
+
+The application stores its database at the platform application-data location (`com/Ducky/Ducky/ducky.db`), deliberately preserving the location and schema used by the prior Tauri release.
+
+For sandbox or CI only, an absolute `DUCKY_WORKSPACE` value overrides the normal Documents/Ducky default. To force the portable CPU renderer, use `SLINT_BACKEND=winit-software cargo run`.
+
+See [Linux development notes](docs/linux.md) and [research references](docs/references.md).
+
+## License
+
+MIT

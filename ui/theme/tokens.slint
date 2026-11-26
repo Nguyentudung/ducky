@@ -1,0 +1,44 @@
+// Ducky's visual foundation. Pages consume semantic tokens only: no page owns a palette.
+export global Theme {
+    in property <bool> dark;
+
+    // Quiet, neutral canvases. The dark palette deliberately avoids blue-grey surfaces.
+    out property <color> background: dark ? #111216 : #f5f5f7;
+    out property <color> sidebar: dark ? #15151a : #f0f0f3;
+    out property <color> surface: dark ? #1b1b21 : #ffffff;
+    out property <color> surface-raised: dark ? #222229 : #ffffff;
+    out property <color> surface-hover: dark ? #282830 : #eaeaf0;
+    out property <color> field: dark ? #202027 : #fafafd;
+    out property <color> border: dark ? #2b2b33 : #e4e4e9;
+    out property <color> separator: dark ? #25252c : #ebebef;
+    out property <color> overlay: dark ? #0000009c : #20202738;
+
+    out property <color> text: dark ? #f1f1f4 : #202027;
+    out property <color> text-secondary: dark ? #a7a7b3 : #666672;
+    out property <color> text-muted: dark ? #777783 : #90909b;
+    out property <color> text-on-accent: #ffffff;
+
+    out property <color> accent: dark ? #6c8eff : #5578e8;
+    out property <color> accent-hover: dark ? #82a0ff : #4669d8;
+    out property <color> accent-soft: dark ? #222c4b : #e9edff;
+    out property <color> focus: dark ? #93abff : #6384ee;
+    out property <color> success: dark ? #45b879 : #208958;
+    out property <color> success-soft: dark ? #1b3328 : #e7f5ed;
+    out property <color> warning: dark ? #e7a94b : #a86f18;
+    out property <color> warning-soft: dark ? #382d1d : #fff4df;
+    out property <color> danger: dark ? #e46b72 : #c94f58;
+    out property <color> danger-soft: dark ? #3a2227 : #fcebed;
+    out property <color> info: dark ? #67a7e8 : #397fc4;
+
+    // Shared geometry and type rhythm.
+    out property <length> space-1: 4px;
+    out property <length> space-2: 8px;
+    out property <length> space-3: 12px;
+    out property <length> space-4: 16px;
+    out property <length> space-5: 20px;
+    out property <length> space-6: 24px;
+    out property <length> radius-sm: 7px;
+    out property <length> radius-md: 10px;
+    out property <length> radius-lg: 14px;
+    out property <length> control-height: 38px;
+}
