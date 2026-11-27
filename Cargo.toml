@@ -1,6 +1,37 @@
-[package]
-name = "ducky"
-version = "0.0.4"
-edition = "2024"
+[workspace]
+resolver = "2"
+members = [
+    "crates/ducky-core",
+    "crates/ducky-server",
+]
 
-[dependencies]
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+authors = ["Nguyen Tu Dung"]
+description = "Ducky — lightweight programming practice workspace manager"
+
+[workspace.dependencies]
+anyhow = "1.0"
+axum = "0.8"
+clap = { version = "4.5", features = ["derive", "env"] }
+directories = "6.0"
+mime_guess = "2.0"
+open = "5.3"
+rust-embed = "8.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "sqlite", "migrate", "macros"] }
+thiserror = "2.0"
+tokio = { version = "1.43", features = ["rt-multi-thread", "macros", "net", "signal", "fs"] }
+tower = "0.5"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+panic = "abort"
+strip = true

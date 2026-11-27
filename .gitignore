@@ -2,6 +2,11 @@
 /target
 **/*.rs.bk
 
+# Frontend
+/frontend/node_modules
+/frontend/dist
+/frontend/.vite
+
 # IDE / OS
 .idea
 .vscode
@@ -9,13 +14,9 @@
 *.swp
 *~
 
-# Env
+# Env / local DB / test artifacts
 .env
 .env.*
-
-
-# Added by cargo
-#
-# already existing elements were commented out
-
-#/target
+*.db
+*.db-shm
+*.db-wal

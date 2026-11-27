@@ -1,0 +1,31 @@
+[package]
+name = "ducky-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Local HTTP server, REST API, and embedded web UI for Ducky"
+
+[[bin]]
+name = "ducky"
+path = "src/main.rs"
+
+[dependencies]
+ducky-core = { path = "../ducky-core" }
+anyhow.workspace = true
+axum.workspace = true
+clap.workspace = true
+directories.workspace = true
+mime_guess.workspace = true
+open.workspace = true
+rust-embed.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx.workspace = true
+tokio.workspace = true
+tower.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+tower = { workspace = true, features = ["util"] }
+http-body-util = "0.1"
